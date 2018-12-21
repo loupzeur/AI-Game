@@ -5,6 +5,7 @@ import time
 import keyboard
 import pickle
 import sys
+import os
 
 config = {
     'reduce_x_factor': 0.25,
@@ -42,6 +43,8 @@ class RecordData:
         self.writeData(str(self.last_time))
     
     def writeData(self,file):
+        if not os.path.exists(self.path):
+            os.makedirs(self.path)
         fw = open(self.path+file, 'wb')
         pickle.dump(self.data, fw)
         fw.close()
@@ -50,7 +53,7 @@ class RecordData:
         fd = open(file, 'rb')
         dataset = pickle.load(fd)
         for z in dataset:
-            cv2.putText(dataset[z]['data'], dataset[z]['key'], (230, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2, cv2.LINE_AA)
+            cv2.putText(dataset[z]['data'], dataset[z]['key'], (230, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2, cv2.LINE_AA)
             cv2.imshow('window',cv2.cvtColor(dataset[z]['data'], cv2.COLOR_BGR2RGB))
             time.sleep(.5)
             if cv2.waitKey(25) & 0xFF == ord('q'):
@@ -65,5 +68,5 @@ if __name__ == "__main__":
         x.loadData(sys.argv[2])
     elif sys.argv[1]=='run':
         if len(sys.argv)==3:
-            x.path=sys.argv[2]
+            x.path=sys.argv[2]+'/'
         x.run()
