@@ -28,15 +28,20 @@ class RecordData:
     def _capKey(self,e):
         if self.last_key['key']==e.name and self.last_key['type']==e.event_type :
             return
+        if(self.printscreen.shape!=(245,480)):
+            print('Failed shape : {}'.format(self.printscreen.shape))
+            return
         self.data[e.time]={'key':e.name,'type':e.event_type,'data':self.printscreen}
         self.last_key={'key':e.name,'type':e.event_type}
+        print(self.last_key)
 
     def run(self): 
         keyboard.hook(self._capKey)
         while(True):
             self.printscreen =  cv2.resize( np.array(ImageGrab.grab(bbox=(config['capture_0x'],config['capture_0y'],config['capture_x_size'],config['capture_y_size']))) ,(0,0),fx=config['reduce_x_factor'],fy=config['reduce_y_factor'])
+            self.printscreen =  cv2.cvtColor(self.printscreen, cv2.COLOR_BGR2GRAY)
             self.last_time = time.time()
-            cv2.imshow('window',cv2.cvtColor(self.printscreen, cv2.COLOR_BGR2GRAY))
+            cv2.imshow('window',self.printscreen)
             if cv2.waitKey(25) & 0xFF == ord('q'):
                 cv2.destroyAllWindows()
                 break
