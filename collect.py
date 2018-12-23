@@ -14,7 +14,8 @@ config = {
     'capture_0y': 40,
     'capture_x_size': 1920,
     'capture_y_size': 1020,
-    'default_path': 'data/'
+    'default_path': 'data/',
+    'req_shape': (245,480)
 }
 
 class RecordData:
@@ -28,8 +29,8 @@ class RecordData:
     def _capKey(self,e):
         if self.last_key['key']==e.name and self.last_key['type']==e.event_type :
             return
-        if(self.printscreen.shape!=(config['capture_y_size']*config['reduce_y_factor'], config['capture_x_size']*config['reduce_x_factor'] )):
-            print('Failed shape : {}'.format(self.printscreen.shape))
+        if(self.printscreen.shape!=config['req_shape']):
+            print('Failed shape : {} Required : {}'.format(self.printscreen.shape,config['req_shape']))
             return
         self.data[e.time]={'key':e.name,'type':e.event_type,'data':self.printscreen}
         self.last_key={'key':e.name,'type':e.event_type}
