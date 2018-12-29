@@ -90,8 +90,8 @@ class RecordData:
     def _screenToData(self,data):
         if not self.ctl_AI:
             return
-        if time.time() - self.last_time > 5000:
-            print(time.time() - self.last_time)
+        if time.time() - self.last_time > 0.5:
+            print('Delaying to avoid overflowing AI : {}'.format(time.time() - self.last_time))
             return
         X_tst = data.astype('float32') / 255.
         pred = self.model.predict([[X_tst]])
@@ -124,8 +124,14 @@ class RecordData:
         if ret != 'Nothing' and ret != 's' and (self.last_key!=ret or ret=='space'):
             keyboard.press_and_release(ret)
         self.last_key = ret
-        print("Key : {:6} {}({}) Pred {}".format(ret,('Down' if idx<4 else 'Up  '),idx,score))
+        print("Key : {:6} {}({}) Pred {:4} Delay : {:5}".format(retprintkey(ret),('Down' if idx<4 else 'Up  '),idx,score, time.time() - self.last_time))
 
+def retprintkey(ret):
+    if ret == 'space':
+        return 'sprint'
+    if ret == 's':
+        return 'drift'
+    return ret
 
 if __name__ == "__main__":
     if len(sys.argv)==0:
